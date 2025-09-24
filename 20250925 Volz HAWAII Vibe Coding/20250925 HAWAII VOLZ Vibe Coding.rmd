@@ -63,6 +63,11 @@ Geprägt von KI-Forscher Andrej Karpathy, beschreibt "Vibe Coding" die Nutzung v
 
 **Kernbotschaft:** KI ist eine neue Abstraktionsebene. Die kognitive Leistung verschiebt sich vom Erinnern an Syntax zur Formulierung präziser Absichten und kritischer Bewertung der Ergebnisse.
 
+## Transformation des Software Development Lifecycle (SDLC)
+
+### Grundprinzipien
+
+KI automatisiert mechanische, repetitive Aufgaben in jeder Phase des SDLC. Die menschliche Rolle wird konsequent aufgewertet – hin zu strategischen, analytischen und kreativen Tätigkeiten.
 
 ## Transformation des Software Development Lifecycle (SDLC)
 
@@ -70,18 +75,13 @@ Geprägt von KI-Forscher Andrej Karpathy, beschreibt "Vibe Coding" die Nutzung v
 
 | Phase | KI-gestützte Aufgabe (Maschine) | Neue menschliche Kernkompetenz |
 | --- | --- | --- |
-| **Konzeption** | Generierung von Mockups & Prototypen  | Systemdenken, Anforderungsvalidierung |
-| **Implementierung** | Code-Generierung, Autovervollständigung  | Kritisches Code-Review, Qualitätssicherung |
-| **Testen** | Autom. Generierung von Testfällen  | Teststrategie-Design, Edge-Case-Analyse |
-| **Debugging** | Autom. Fehlerlokalisierung, Lösungsvorschläge  | Systemische Ursachenanalyse |
-| **Iteration** | Autom. Dokumentationserstellung  | Strategisches Management von Technical Debt |
+| **1. Konzeption & Design** | Generierung von Mockups & Prototypen  | Systemdenken, Anforderungsvalidierung |
+| **2. Implementierung** | Code-Generierung, Autovervollständigung  | Kritisches Code-Review, Qualitätssicherung |
+| **3. Testen** | Autom. Generierung von Testfällen  | Teststrategie-Design, Edge-Case-Analyse |
+| **4. Debugging** | Autom. Fehlerlokalisierung, Lösungsvorschläge  | Systemische Ursachenanalyse |
+| **5. Iteration & Wartung ** | Autom. Dokumentationserstellung  | Strategisches Management von Technical Debt |
 
 
-## Transformation des Software Development Lifecycle (SDLC)
-
-### Fazit
-
-KI automatisiert mechanische, repetitive Aufgaben in jeder Phase des SDLC. Die menschliche Rolle wird konsequent aufgewertet – hin zu strategischen, analytischen und kreativen Tätigkeiten.
 
 ## Phase 1: Konzeption & Design
 
