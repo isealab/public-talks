@@ -8,6 +8,9 @@ outputs are useful for sharing or archiving.
 
 - `TALK_CATALOG.md` is a generated index of talk folders, source files,
   rendered outputs, assets, and known publication links.
+- `TALK_CATALOG.json` and `index.html` are generated from the same source so
+  agents, scripts, and browsers can inspect the catalog without parsing
+  Markdown.
 - `20250925 Volz HAWAII Vibe Coding/` contains the R Markdown source, image
   assets, CSS, and rendered PDF/HTML outputs for the HAWAII 2025 talk on vibe
   coding and programming education. Published copy:
@@ -30,5 +33,5 @@ Refresh the catalog after adding or rendering talks:
 
 ```sh
 python3 scripts/generate_talk_catalog.py
-git diff --exit-code -- TALK_CATALOG.md
+git diff --exit-code -- TALK_CATALOG.md TALK_CATALOG.json index.html
 ```

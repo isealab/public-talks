@@ -1,0 +1,64 @@
+{
+  "asset_count": 3,
+  "generated_by": "scripts/generate_talk_catalog.py",
+  "output_count": 3,
+  "source_count": 1,
+  "talk_count": 1,
+  "talks": [
+    {
+      "assets": [
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/2025-09-22_Design_Stitch.png",
+          "type": "png",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/2025-09-22_Design_Stitch.png"
+        },
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/2025-09-22_Gemini_Agent.png",
+          "type": "png",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/2025-09-22_Gemini_Agent.png"
+        },
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/styles.css",
+          "type": "css",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/styles.css"
+        }
+      ],
+      "date": "2025-09-25 (HAWAII 2025)",
+      "file_types": {
+        "css": 1,
+        "html": 2,
+        "pdf": 1,
+        "png": 2,
+        "rmd": 1
+      },
+      "folder": "20250925 Volz HAWAII Vibe Coding",
+      "folder_url": "20250925%20Volz%20HAWAII%20Vibe%20Coding",
+      "outputs": [
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/20250925 HAWAII VOLZ Vibe Coding.html",
+          "type": "html",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html"
+        },
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/20250925-HAWAII-VOLZ-Vibe-Coding.html",
+          "type": "html",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.html"
+        },
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf",
+          "type": "pdf",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf"
+        }
+      ],
+      "published_url": "http://rpubs.com/raphaelvolz/1347548",
+      "sources": [
+        {
+          "path": "20250925 Volz HAWAII Vibe Coding/20250925 HAWAII VOLZ Vibe Coding.rmd",
+          "type": "rmd",
+          "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.rmd"
+        }
+      ],
+      "title": "Vibe Coding: Warum überhaupt programmieren lernen?"
+    }
+  ]
+}

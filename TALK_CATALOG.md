@@ -9,6 +9,9 @@ Regenerate after adding talks or rendered artifacts:
 python3 scripts/generate_talk_catalog.py
 ```
 
+Machine-readable and browser-friendly catalog outputs are generated at
+`TALK_CATALOG.json` and `index.html`.
+
 ## Talks
 
 | Talk | Date | Sources | Outputs | Assets | Published |

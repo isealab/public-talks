@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Public Talks Catalog</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #eef3f6;
+        --ink: #1f2933;
+        --muted: #65717d;
+        --line: #d2dee6;
+        --paper: #ffffff;
+        --accent: #246b73;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+      main {
+        margin: 0 auto;
+        max-width: 1120px;
+        padding: 3rem 1rem;
+      }
+      .hero {
+        border-bottom: 1px solid var(--line);
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+      }
+      h1, h2, h3, p { margin: 0; }
+      h1 {
+        font-size: clamp(2rem, 6vw, 4.5rem);
+        letter-spacing: 0;
+        line-height: 1;
+      }
+      .lead {
+        color: var(--muted);
+        font-size: 1.05rem;
+        margin-top: 0.9rem;
+        max-width: 760px;
+      }
+      .talk-grid {
+        display: grid;
+        gap: 1rem;
+      }
+      .talk-card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 12px 30px rgba(31, 41, 51, 0.07);
+        padding: 1.25rem;
+      }
+      .talk-card-header {
+        align-items: flex-start;
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+      }
+      .eyebrow {
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      h2 {
+        font-size: 1.45rem;
+        letter-spacing: 0;
+        line-height: 1.15;
+        margin-top: 0.25rem;
+      }
+      h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.45rem;
+      }
+      a { color: var(--accent); font-weight: 700; }
+      .folder, .muted {
+        color: var(--muted);
+        margin-top: 0.6rem;
+      }
+      .metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: 1rem;
+      }
+      .metrics span, .pill {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        min-height: 2rem;
+        padding: 0.35rem 0.75rem;
+      }
+      .pill {
+        color: var(--accent);
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .primary-link {
+        display: inline-flex;
+        margin-top: 1rem;
+      }
+      .artifact-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin-top: 1.2rem;
+      }
+      .file-list {
+        display: grid;
+        gap: 0.35rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .file-list li {
+        align-items: baseline;
+        border-top: 1px solid var(--line);
+        display: flex;
+        gap: 0.75rem;
+        justify-content: space-between;
+        padding-top: 0.45rem;
+      }
+      .file-list span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+      @media (max-width: 760px) {
+        main { padding: 2rem 1rem; }
+        .talk-card-header { display: block; }
+        .pill { display: inline-flex; margin-top: 0.75rem; }
+        .artifact-grid { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <h1>Public Talks</h1>
+        <p class="lead">
+          Generated index of public talk sources, rendered outputs, assets, and
+          publication links. The same generator also writes TALK_CATALOG.md and
+          TALK_CATALOG.json so CI can detect drift.
+        </p>
+      </section>
+      <section class="talk-grid" aria-label="Talk catalog">
+<article class="talk-card">
+              <div class="talk-card-header">
+                <div>
+                  <p class="eyebrow">2025-09-25 (HAWAII 2025)</p>
+                  <h2>Vibe Coding: Warum überhaupt programmieren lernen?</h2>
+                </div>
+                <a class="pill" href="http://rpubs.com/raphaelvolz/1347548">Published copy</a>
+              </div>
+              <p class="folder">20250925 Volz HAWAII Vibe Coding</p>
+              <div class="metrics" aria-label="Talk artifact counts">
+                <span><strong>1</strong> sources</span>
+                <span><strong>3</strong> outputs</span>
+                <span><strong>3</strong> assets</span>
+              </div>
+              <p class="muted">File types: css (1), html (2), pdf (1), png (2), rmd (1)</p>
+              <a class="primary-link" href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html">Open rendered talk</a>
+              <div class="artifact-grid">
+                <section>
+                  <h3>Sources</h3>
+                  <ul class="file-list"><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.rmd">20250925 HAWAII VOLZ Vibe Coding.rmd</a><span>rmd</span></li></ul>
+                </section>
+                <section>
+                  <h3>Outputs</h3>
+                  <ul class="file-list"><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html">20250925 HAWAII VOLZ Vibe Coding.html</a><span>html</span></li><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.html">20250925-HAWAII-VOLZ-Vibe-Coding.html</a><span>html</span></li><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf">20250925-HAWAII-VOLZ-Vibe-Coding.pdf</a><span>pdf</span></li></ul>
+                </section>
+              </div>
+            </article>
+      </section>
+    </main>
+  </body>
+</html>
