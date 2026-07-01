@@ -10,6 +10,8 @@ for (file in files) {
   message("Rendering ", file)
   rmarkdown::render(
     input = file,
+    output_dir = dirname(file),
+    intermediates_dir = dirname(file),
     envir = new.env(parent = globalenv()),
     quiet = FALSE
   )
