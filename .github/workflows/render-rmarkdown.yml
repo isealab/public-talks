@@ -20,9 +20,15 @@ jobs:
       - name: Set up TinyTeX
         uses: r-lib/actions/setup-tinytex@v2
 
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libuv1-dev
+
       - name: Install R packages
         run: |
           install.packages(c("knitr", "rmarkdown"), repos = "https://cloud.r-project.org")
+          stopifnot(requireNamespace("rmarkdown", quietly = TRUE))
         shell: Rscript {0}
 
       - name: Render talks
