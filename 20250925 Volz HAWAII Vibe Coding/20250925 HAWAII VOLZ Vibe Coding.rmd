@@ -2,9 +2,7 @@
 title: "Vibe Coding: Warum überhaupt programmieren lernen?"
 author: "Prof. Dr. Raphael Volz (HSPF)"
 date: "2025-09-25 (HAWAII 2025)"
-output: 
-  revealjs::revealjs_presentation:
-    css: styles.css
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -17,14 +15,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ### Hauptthese
 
-*Das Erlernen des Programmierens im KI-Zeitalter dient nicht mehr primär dem mechanischen Akt des Codeschreibens, sondern der Entwicklung der fundamentalen Expertise, systematisch zu denken und robuste Systeme zu entwerfen.*
+*Das Erlernen des Programmierens im KI-Zeitalter dient nicht mehr primär dem mechanischen Akt des Code-Schreibens, sondern der Entwicklung der fundamentalen Expertise, systematisch zu denken und robuste Systeme zu entwerfen.*
 
 
 ## Der Paradigmenwechsel in der Softwareentwicklung
 
 ### Kernpunkte
 
--   **Vom Produzenten zum Dirigenten:** Entwickler steuern KI-Assistenten, anstatt jede Codezeile manuell zu erstellen.
+-   **Vom Produzenten zum Dirigenten:** Entwickler steuern KI-Assistenten, anstatt jede Code-Zeile manuell zu erstellen.
 -   **Fokus auf "Warum" & "Wie":** Die strategische Systemarchitektur rückt in den Vordergrund, während die KI das "Was" der Implementierung übernimmt.
 -   **Menschliche Expertise als Kernkompetenz:** Kritisches Denken und die Validierung von KI-Ergebnissen werden entscheidend.
 
@@ -105,7 +103,7 @@ Analysiert User Stories und generiert UI-Mockups und Prototypen in Minuten statt
 
 **KI als "fleißiger Schreiber":**
 
-*   Generiert Codeblöcke und automatisiert Routineaufgaben, was die Produktivität erheblich steigern kann.
+*   Generiert Code-Blöcke und automatisiert Routineaufgaben, was die Produktivität erheblich steigern kann.
 *   **RISIKO:** KI-Code kann Sicherheitslücken, schlechte Praktiken und logische Fehler enthalten.
 
 **Neue menschliche Kernkompetenzen:**
@@ -144,7 +142,7 @@ Analysiert User Stories und generiert UI-Mockups und Prototypen in Minuten statt
 
 **Neue menschliche Kernkompetenzen:**
 
-*   **Systemische Ursachenanalyse:** Über die einzelne Codezeile hinausblicken und nach architektonischen Grundproblemen suchen.
+*   **Systemische Ursachenanalyse:** Über die einzelne Code-Zeile hinausblicken und nach architektonischen Grundproblemen suchen.
 *   **Hypothesenbildung:** KI-Vorschläge als Spuren nutzen und systematisch im Gesamtsystem überprüfen.
 *   **Kontextuelles Debugging:** Domänenwissen einbringen, um zu verstehen, warum technisch korrekter Code im Geschäftskontext falsch ist.
 
