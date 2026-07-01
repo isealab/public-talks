@@ -8,12 +8,13 @@
     <style>
       :root {
         color-scheme: light;
-        --bg: #eef3f6;
+        --bg: #f3f0ea;
         --ink: #1f2933;
-        --muted: #65717d;
-        --line: #d2dee6;
+        --muted: #66717d;
+        --line: #d8d0c3;
         --paper: #ffffff;
-        --accent: #246b73;
+        --accent: #1f6f5f;
+        --accent-2: #7a3f25;
       }
       * { box-sizing: border-box; }
       body {
@@ -25,7 +26,7 @@
       }
       main {
         margin: 0 auto;
-        max-width: 1120px;
+        max-width: 1180px;
         padding: 3rem 1rem;
       }
       .hero {
@@ -45,6 +46,30 @@
         margin-top: 0.9rem;
         max-width: 760px;
       }
+      .toolbar {
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr auto;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+      }
+      .search {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        font: inherit;
+        min-height: 2.75rem;
+        padding: 0.65rem 0.85rem;
+        width: 100%;
+      }
+      .catalog-count {
+        color: var(--muted);
+        font-weight: 700;
+        white-space: nowrap;
+      }
       .talk-grid {
         display: grid;
         gap: 1rem;
@@ -54,6 +79,31 @@
         border: 1px solid var(--line);
         border-radius: 8px;
         box-shadow: 0 12px 30px rgba(31, 41, 51, 0.07);
+        display: grid;
+        grid-template-columns: minmax(220px, 0.45fr) minmax(0, 1fr);
+        overflow: hidden;
+      }
+      .talk-card[hidden] { display: none; }
+      .talk-media {
+        background: #17212b;
+        min-height: 260px;
+      }
+      .talk-media img {
+        display: block;
+        height: 100%;
+        object-fit: cover;
+        width: 100%;
+      }
+      .thumbnail-placeholder {
+        align-items: center;
+        color: #f8fafc;
+        display: flex;
+        font-size: 2rem;
+        font-weight: 800;
+        height: 100%;
+        justify-content: center;
+      }
+      .talk-body {
         padding: 1.25rem;
       }
       .talk-card-header {
@@ -84,32 +134,68 @@
         color: var(--muted);
         margin-top: 0.6rem;
       }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-top: 1rem;
+      }
+      .action-link {
+        align-items: center;
+        background: var(--accent);
+        border-radius: 6px;
+        color: #fff;
+        display: inline-flex;
+        min-height: 2.25rem;
+        padding: 0.45rem 0.75rem;
+        text-decoration: none;
+      }
+      .action-link.secondary {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--accent-2);
+      }
       .metrics {
         display: flex;
         flex-wrap: wrap;
         gap: 0.6rem;
         margin-top: 1rem;
       }
-      .metrics span, .pill {
+      .metrics span {
         border: 1px solid var(--line);
         border-radius: 999px;
         min-height: 2rem;
         padding: 0.35rem 0.75rem;
-      }
-      .pill {
-        color: var(--accent);
-        text-decoration: none;
-        white-space: nowrap;
-      }
-      .primary-link {
-        display: inline-flex;
-        margin-top: 1rem;
       }
       .artifact-grid {
         display: grid;
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         margin-top: 1.2rem;
+      }
+      .asset-section {
+        grid-column: 1 / -1;
+      }
+      .asset-strip {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+      figure {
+        margin: 0;
+      }
+      figure img {
+        aspect-ratio: 16 / 10;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        display: block;
+        object-fit: cover;
+        width: 100%;
+      }
+      figcaption {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: 0.35rem;
       }
       .file-list {
         display: grid;
@@ -133,8 +219,11 @@
       }
       @media (max-width: 760px) {
         main { padding: 2rem 1rem; }
+        .toolbar { grid-template-columns: 1fr; }
+        .catalog-count { white-space: normal; }
+        .talk-card { grid-template-columns: 1fr; }
+        .talk-media { min-height: 190px; }
         .talk-card-header { display: block; }
-        .pill { display: inline-flex; margin-top: 0.75rem; }
         .artifact-grid { grid-template-columns: 1fr; }
       }
     </style>
@@ -149,35 +238,62 @@
           TALK_CATALOG.json so CI can detect drift.
         </p>
       </section>
+      <section class="toolbar" aria-label="Catalog filters">
+        <input id="catalog-search" class="search" type="search" placeholder="Search talks, outputs, assets, dates" />
+        <p class="catalog-count"><span id="visible-count">1</span> / 1 talks</p>
+      </section>
       <section class="talk-grid" aria-label="Talk catalog">
-<article class="talk-card">
-              <div class="talk-card-header">
-                <div>
-                  <p class="eyebrow">2025-09-25 (HAWAII 2025)</p>
-                  <h2>Vibe Coding: Warum überhaupt programmieren lernen?</h2>
+<article class="talk-card" data-search="vibe coding: warum überhaupt programmieren lernen? 20250925 volz hawaii vibe coding 2025-09-25 (hawaii 2025) css (1), html (2), pdf (1), png (2), rmd (1) 20250925 volz hawaii vibe coding/20250925 hawaii volz vibe coding.rmd 20250925 volz hawaii vibe coding/20250925 hawaii volz vibe coding.html 20250925 volz hawaii vibe coding/20250925-hawaii-volz-vibe-coding.html 20250925 volz hawaii vibe coding/20250925-hawaii-volz-vibe-coding.pdf 20250925 volz hawaii vibe coding/2025-09-22_design_stitch.png 20250925 volz hawaii vibe coding/2025-09-22_gemini_agent.png 20250925 volz hawaii vibe coding/styles.css">
+              <div class="talk-media">
+                <img src="20250925%20Volz%20HAWAII%20Vibe%20Coding/2025-09-22_Design_Stitch.png" alt="Vibe Coding: Warum überhaupt programmieren lernen? preview" loading="lazy" />
+              </div>
+              <div class="talk-body">
+                <div class="talk-card-header">
+                  <div>
+                    <p class="eyebrow">2025-09-25 (HAWAII 2025)</p>
+                    <h2>Vibe Coding: Warum überhaupt programmieren lernen?</h2>
+                  </div>
                 </div>
-                <a class="pill" href="http://rpubs.com/raphaelvolz/1347548">Published copy</a>
-              </div>
-              <p class="folder">20250925 Volz HAWAII Vibe Coding</p>
-              <div class="metrics" aria-label="Talk artifact counts">
-                <span><strong>1</strong> sources</span>
-                <span><strong>3</strong> outputs</span>
-                <span><strong>3</strong> assets</span>
-              </div>
-              <p class="muted">File types: css (1), html (2), pdf (1), png (2), rmd (1)</p>
-              <a class="primary-link" href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html">Open rendered talk</a>
-              <div class="artifact-grid">
-                <section>
-                  <h3>Sources</h3>
-                  <ul class="file-list"><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.rmd">20250925 HAWAII VOLZ Vibe Coding.rmd</a><span>rmd</span></li></ul>
-                </section>
-                <section>
-                  <h3>Outputs</h3>
-                  <ul class="file-list"><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html">20250925 HAWAII VOLZ Vibe Coding.html</a><span>html</span></li><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.html">20250925-HAWAII-VOLZ-Vibe-Coding.html</a><span>html</span></li><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf">20250925-HAWAII-VOLZ-Vibe-Coding.pdf</a><span>pdf</span></li></ul>
-                </section>
+                <p class="folder">20250925 Volz HAWAII Vibe Coding</p>
+                <div class="actions"><a class="action-link" href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html">Open HTML 1</a><a class="action-link" href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.html">Open HTML 2</a><a class="action-link" href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf">Open PDF</a><a class="action-link secondary" href="http://rpubs.com/raphaelvolz/1347548">Published copy</a></div>
+                <div class="metrics" aria-label="Talk artifact counts">
+                  <span><strong>1</strong> sources</span>
+                  <span><strong>3</strong> outputs</span>
+                  <span><strong>3</strong> assets</span>
+                </div>
+                <p class="muted">File types: css (1), html (2), pdf (1), png (2), rmd (1)</p>
+                <div class="artifact-grid">
+                  <section>
+                    <h3>Sources</h3>
+                    <ul class="file-list"><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.rmd">20250925 HAWAII VOLZ Vibe Coding.rmd</a><span>rmd</span></li></ul>
+                  </section>
+                  <section>
+                    <h3>Outputs</h3>
+                    <ul class="file-list"><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html">20250925 HAWAII VOLZ Vibe Coding.html</a><span>html</span></li><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.html">20250925-HAWAII-VOLZ-Vibe-Coding.html</a><span>html</span></li><li><a href="20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf">20250925-HAWAII-VOLZ-Vibe-Coding.pdf</a><span>pdf</span></li></ul>
+                  </section>
+                  <section class="asset-section">
+                    <h3>Assets</h3>
+                    <div class="asset-strip"><figure><img src="20250925%20Volz%20HAWAII%20Vibe%20Coding/2025-09-22_Design_Stitch.png" alt="2025-09-22_Design_Stitch.png" loading="lazy" /><figcaption>2025-09-22_Design_Stitch.png</figcaption></figure><figure><img src="20250925%20Volz%20HAWAII%20Vibe%20Coding/2025-09-22_Gemini_Agent.png" alt="2025-09-22_Gemini_Agent.png" loading="lazy" /><figcaption>2025-09-22_Gemini_Agent.png</figcaption></figure></div>
+                  </section>
+                </div>
               </div>
             </article>
       </section>
     </main>
+    <script>
+      const search = document.getElementById('catalog-search');
+      const cards = Array.from(document.querySelectorAll('.talk-card'));
+      const visibleCount = document.getElementById('visible-count');
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        cards.forEach((card) => {
+          const match = !query || card.dataset.search.includes(query);
+          card.hidden = !match;
+          if (match) visible += 1;
+        });
+        visibleCount.textContent = visible;
+      });
+    </script>
   </body>
 </html>

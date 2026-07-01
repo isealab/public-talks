@@ -50,6 +50,11 @@
           "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925-HAWAII-VOLZ-Vibe-Coding.pdf"
         }
       ],
+      "primary_output": {
+        "path": "20250925 Volz HAWAII Vibe Coding/20250925 HAWAII VOLZ Vibe Coding.html",
+        "type": "html",
+        "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.html"
+      },
       "published_url": "http://rpubs.com/raphaelvolz/1347548",
       "sources": [
         {
@@ -58,6 +63,11 @@
           "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/20250925%20HAWAII%20VOLZ%20Vibe%20Coding.rmd"
         }
       ],
+      "thumbnail": {
+        "path": "20250925 Volz HAWAII Vibe Coding/2025-09-22_Design_Stitch.png",
+        "type": "png",
+        "url": "20250925%20Volz%20HAWAII%20Vibe%20Coding/2025-09-22_Design_Stitch.png"
+      },
       "title": "Vibe Coding: Warum überhaupt programmieren lernen?"
     }
   ]

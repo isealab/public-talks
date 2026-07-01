@@ -18,6 +18,7 @@ HTML_TARGET = ROOT / "index.html"
 SOURCE_SUFFIXES = {".rmd", ".qmd", ".tex", ".md"}
 OUTPUT_SUFFIXES = {".html", ".pdf", ".pptx"}
 ASSET_SUFFIXES = {".css", ".jpg", ".jpeg", ".png", ".svg"}
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".svg"}
 
 PUBLISHED_URLS = {
     "20250925 Volz HAWAII Vibe Coding": "http://rpubs.com/raphaelvolz/1347548",
@@ -65,6 +66,13 @@ def file_entry(path: Path) -> dict[str, str]:
         "url": url_path(path),
         "type": path.suffix.lower()[1:],
     }
+
+
+def first_entry(paths: list[Path], suffixes: set[str]) -> dict[str, str] | None:
+    for path in paths:
+        if path.suffix.lower() in suffixes:
+            return file_entry(path)
+    return None
 
 
 def talk_title(folder: str, sources: list[Path]) -> str:
@@ -119,6 +127,12 @@ def collect_talks() -> list[dict[str, Any]]:
             key=lambda item: str(item).lower(),
         )
         counts = Counter(path.suffix.lower()[1:] for path in files)
+        primary_output = (
+            first_entry(outputs, {".html"})
+            or first_entry(outputs, {".pdf"})
+            or first_entry(outputs, {".pptx"})
+        )
+        thumbnail = first_entry(assets, IMAGE_SUFFIXES)
         talks.append(
             {
                 "folder": folder,
@@ -126,6 +140,8 @@ def collect_talks() -> list[dict[str, Any]]:
                 "title": talk_title(folder, sources),
                 "date": talk_date(sources),
                 "published_url": PUBLISHED_URLS.get(folder, ""),
+                "primary_output": primary_output,
+                "thumbnail": thumbnail,
                 "sources": [file_entry(path) for path in sources],
                 "outputs": [file_entry(path) for path in outputs],
                 "assets": [file_entry(path) for path in assets],
@@ -229,51 +245,101 @@ def render_file_links(items: list[dict[str, str]]) -> str:
     return "<ul class=\"file-list\">" + "".join(links) + "</ul>"
 
 
+def render_output_actions(talk: dict[str, Any]) -> str:
+    links = []
+    type_counts = Counter(item["type"] for item in talk["outputs"])
+    type_index: Counter[str] = Counter()
+    for item in talk["outputs"]:
+        if item["type"] not in {"html", "pdf", "pptx"}:
+            continue
+        type_index[item["type"]] += 1
+        suffix = f" {type_index[item['type']]}" if type_counts[item["type"]] > 1 else ""
+        label = f"Open {item['type'].upper()}{suffix}"
+        url = html.escape(item["url"], quote=True)
+        links.append(f'<a class="action-link" href="{url}">{label}</a>')
+    if talk["published_url"]:
+        url = html.escape(talk["published_url"], quote=True)
+        links.append(f'<a class="action-link secondary" href="{url}">Published copy</a>')
+    return "".join(links)
+
+
+def render_asset_previews(items: list[dict[str, str]]) -> str:
+    previews = []
+    for item in items:
+        if f".{item['type']}" not in IMAGE_SUFFIXES:
+            continue
+        url = html.escape(item["url"], quote=True)
+        label = html.escape(Path(item["path"]).name)
+        previews.append(
+            f'<figure><img src="{url}" alt="{label}" loading="lazy" />'
+            f"<figcaption>{label}</figcaption></figure>"
+        )
+    if not previews:
+        return "<p class=\"muted\">No image assets indexed.</p>"
+    return "<div class=\"asset-strip\">" + "".join(previews) + "</div>"
+
+
 def render_html(talks: list[dict[str, Any]]) -> str:
     cards = []
     for talk in talks:
-        published = ""
-        if talk["published_url"]:
-            url = html.escape(talk["published_url"], quote=True)
-            published = f'<a class="pill" href="{url}">Published copy</a>'
-        primary_output = ""
-        if talk["outputs"]:
-            first_output = talk["outputs"][0]
-            primary_output = (
-                f'<a class="primary-link" href="{html.escape(first_output["url"], quote=True)}">'
-                "Open rendered talk"
-                "</a>"
-            )
         file_types = ", ".join(
             f"{html.escape(kind)} ({count})" for kind, count in talk["file_types"].items()
         )
+        thumbnail = talk.get("thumbnail")
+        if thumbnail:
+            thumbnail_html = (
+                f'<img src="{html.escape(thumbnail["url"], quote=True)}" '
+                f'alt="{html.escape(talk["title"], quote=True)} preview" loading="lazy" />'
+            )
+        else:
+            thumbnail_html = '<div class="thumbnail-placeholder">Talk</div>'
+        search_text = html.escape(
+            " ".join(
+                [
+                    talk["title"],
+                    talk["folder"],
+                    talk["date"],
+                    file_types,
+                    " ".join(item["path"] for item in talk["sources"] + talk["outputs"] + talk["assets"]),
+                ]
+            ).lower(),
+            quote=True,
+        )
         cards.append(
             f"""
-            <article class="talk-card">
-              <div class="talk-card-header">
-                <div>
-                  <p class="eyebrow">{html.escape(talk["date"] or "Undated")}</p>
-                  <h2>{html.escape(talk["title"])}</h2>
+            <article class="talk-card" data-search="{search_text}">
+              <div class="talk-media">
+                {thumbnail_html}
+              </div>
+              <div class="talk-body">
+                <div class="talk-card-header">
+                  <div>
+                    <p class="eyebrow">{html.escape(talk["date"] or "Undated")}</p>
+                    <h2>{html.escape(talk["title"])}</h2>
+                  </div>
                 </div>
-                {published}
-              </div>
-              <p class="folder">{html.escape(talk["folder"])}</p>
-              <div class="metrics" aria-label="Talk artifact counts">
-                <span><strong>{len(talk["sources"])}</strong> sources</span>
-                <span><strong>{len(talk["outputs"])}</strong> outputs</span>
-                <span><strong>{len(talk["assets"])}</strong> assets</span>
-              </div>
-              <p class="muted">File types: {file_types}</p>
-              {primary_output}
-              <div class="artifact-grid">
-                <section>
-                  <h3>Sources</h3>
-                  {render_file_links(talk["sources"])}
-                </section>
-                <section>
-                  <h3>Outputs</h3>
-                  {render_file_links(talk["outputs"])}
-                </section>
+                <p class="folder">{html.escape(talk["folder"])}</p>
+                <div class="actions">{render_output_actions(talk)}</div>
+                <div class="metrics" aria-label="Talk artifact counts">
+                  <span><strong>{len(talk["sources"])}</strong> sources</span>
+                  <span><strong>{len(talk["outputs"])}</strong> outputs</span>
+                  <span><strong>{len(talk["assets"])}</strong> assets</span>
+                </div>
+                <p class="muted">File types: {file_types}</p>
+                <div class="artifact-grid">
+                  <section>
+                    <h3>Sources</h3>
+                    {render_file_links(talk["sources"])}
+                  </section>
+                  <section>
+                    <h3>Outputs</h3>
+                    {render_file_links(talk["outputs"])}
+                  </section>
+                  <section class="asset-section">
+                    <h3>Assets</h3>
+                    {render_asset_previews(talk["assets"])}
+                  </section>
+                </div>
               </div>
             </article>
             """.strip()
@@ -290,12 +356,13 @@ def render_html(talks: list[dict[str, Any]]) -> str:
     <style>
       :root {
         color-scheme: light;
-        --bg: #eef3f6;
+        --bg: #f3f0ea;
         --ink: #1f2933;
-        --muted: #65717d;
-        --line: #d2dee6;
+        --muted: #66717d;
+        --line: #d8d0c3;
         --paper: #ffffff;
-        --accent: #246b73;
+        --accent: #1f6f5f;
+        --accent-2: #7a3f25;
       }
       * { box-sizing: border-box; }
       body {
@@ -307,7 +374,7 @@ def render_html(talks: list[dict[str, Any]]) -> str:
       }
       main {
         margin: 0 auto;
-        max-width: 1120px;
+        max-width: 1180px;
         padding: 3rem 1rem;
       }
       .hero {
@@ -327,6 +394,30 @@ def render_html(talks: list[dict[str, Any]]) -> str:
         margin-top: 0.9rem;
         max-width: 760px;
       }
+      .toolbar {
+        align-items: center;
+        border-bottom: 1px solid var(--line);
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: 1fr auto;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1.25rem;
+      }
+      .search {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--ink);
+        font: inherit;
+        min-height: 2.75rem;
+        padding: 0.65rem 0.85rem;
+        width: 100%;
+      }
+      .catalog-count {
+        color: var(--muted);
+        font-weight: 700;
+        white-space: nowrap;
+      }
       .talk-grid {
         display: grid;
         gap: 1rem;
@@ -336,6 +427,31 @@ def render_html(talks: list[dict[str, Any]]) -> str:
         border: 1px solid var(--line);
         border-radius: 8px;
         box-shadow: 0 12px 30px rgba(31, 41, 51, 0.07);
+        display: grid;
+        grid-template-columns: minmax(220px, 0.45fr) minmax(0, 1fr);
+        overflow: hidden;
+      }
+      .talk-card[hidden] { display: none; }
+      .talk-media {
+        background: #17212b;
+        min-height: 260px;
+      }
+      .talk-media img {
+        display: block;
+        height: 100%;
+        object-fit: cover;
+        width: 100%;
+      }
+      .thumbnail-placeholder {
+        align-items: center;
+        color: #f8fafc;
+        display: flex;
+        font-size: 2rem;
+        font-weight: 800;
+        height: 100%;
+        justify-content: center;
+      }
+      .talk-body {
         padding: 1.25rem;
       }
       .talk-card-header {
@@ -366,32 +482,68 @@ def render_html(talks: list[dict[str, Any]]) -> str:
         color: var(--muted);
         margin-top: 0.6rem;
       }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.55rem;
+        margin-top: 1rem;
+      }
+      .action-link {
+        align-items: center;
+        background: var(--accent);
+        border-radius: 6px;
+        color: #fff;
+        display: inline-flex;
+        min-height: 2.25rem;
+        padding: 0.45rem 0.75rem;
+        text-decoration: none;
+      }
+      .action-link.secondary {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--accent-2);
+      }
       .metrics {
         display: flex;
         flex-wrap: wrap;
         gap: 0.6rem;
         margin-top: 1rem;
       }
-      .metrics span, .pill {
+      .metrics span {
         border: 1px solid var(--line);
         border-radius: 999px;
         min-height: 2rem;
         padding: 0.35rem 0.75rem;
-      }
-      .pill {
-        color: var(--accent);
-        text-decoration: none;
-        white-space: nowrap;
-      }
-      .primary-link {
-        display: inline-flex;
-        margin-top: 1rem;
       }
       .artifact-grid {
         display: grid;
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         margin-top: 1.2rem;
+      }
+      .asset-section {
+        grid-column: 1 / -1;
+      }
+      .asset-strip {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      }
+      figure {
+        margin: 0;
+      }
+      figure img {
+        aspect-ratio: 16 / 10;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        display: block;
+        object-fit: cover;
+        width: 100%;
+      }
+      figcaption {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: 0.35rem;
       }
       .file-list {
         display: grid;
@@ -415,8 +567,11 @@ def render_html(talks: list[dict[str, Any]]) -> str:
       }
       @media (max-width: 760px) {
         main { padding: 2rem 1rem; }
+        .toolbar { grid-template-columns: 1fr; }
+        .catalog-count { white-space: normal; }
+        .talk-card { grid-template-columns: 1fr; }
+        .talk-media { min-height: 190px; }
         .talk-card-header { display: block; }
-        .pill { display: inline-flex; margin-top: 0.75rem; }
         .artifact-grid { grid-template-columns: 1fr; }
       }
     </style>
@@ -431,12 +586,35 @@ def render_html(talks: list[dict[str, Any]]) -> str:
           TALK_CATALOG.json so CI can detect drift.
         </p>
       </section>
+      <section class="toolbar" aria-label="Catalog filters">
+        <input id="catalog-search" class="search" type="search" placeholder="Search talks, outputs, assets, dates" />
+        <p class="catalog-count"><span id="visible-count">"""
+        + str(len(talks))
+        + """</span> / """
+        + str(len(talks))
+        + """ talks</p>
+      </section>
       <section class="talk-grid" aria-label="Talk catalog">
 """
         + "\n".join(cards)
         + """
       </section>
     </main>
+    <script>
+      const search = document.getElementById('catalog-search');
+      const cards = Array.from(document.querySelectorAll('.talk-card'));
+      const visibleCount = document.getElementById('visible-count');
+      search.addEventListener('input', () => {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        cards.forEach((card) => {
+          const match = !query || card.dataset.search.includes(query);
+          card.hidden = !match;
+          if (match) visible += 1;
+        });
+        visibleCount.textContent = visible;
+      });
+    </script>
   </body>
 </html>
 """
