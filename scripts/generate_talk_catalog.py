@@ -399,11 +399,11 @@ def render_html(talks: list[dict[str, Any]]) -> str:
         border-bottom: 1px solid var(--line);
         display: grid;
         gap: 1rem;
-        grid-template-columns: 1fr auto;
+        grid-template-columns: 1fr auto auto;
         margin-bottom: 1.25rem;
         padding-bottom: 1.25rem;
       }
-      .search {
+      .search, button {
         background: var(--paper);
         border: 1px solid var(--line);
         border-radius: 8px;
@@ -413,10 +413,24 @@ def render_html(talks: list[dict[str, Any]]) -> str:
         padding: 0.65rem 0.85rem;
         width: 100%;
       }
+      button {
+        cursor: pointer;
+        font-weight: 800;
+        width: auto;
+      }
+      button:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
       .catalog-count {
         color: var(--muted);
         font-weight: 700;
         white-space: nowrap;
+      }
+      .copy-status {
+        color: var(--muted);
+        font-size: 0.9rem;
+        min-height: 1.3rem;
       }
       .talk-grid {
         display: grid;
@@ -593,6 +607,8 @@ def render_html(talks: list[dict[str, Any]]) -> str:
         + """</span> / """
         + str(len(talks))
         + """ talks</p>
+        <button id="copy-catalog-link" type="button">Copy filtered link</button>
+        <span id="copy-status" class="copy-status" aria-live="polite"></span>
       </section>
       <section class="talk-grid" aria-label="Talk catalog">
 """
@@ -604,7 +620,21 @@ def render_html(talks: list[dict[str, Any]]) -> str:
       const search = document.getElementById('catalog-search');
       const cards = Array.from(document.querySelectorAll('.talk-card'));
       const visibleCount = document.getElementById('visible-count');
-      search.addEventListener('input', () => {
+      const copyButton = document.getElementById('copy-catalog-link');
+      const copyStatus = document.getElementById('copy-status');
+      const params = new URLSearchParams(window.location.search);
+
+      function updateUrl() {
+        const next = new URLSearchParams();
+        if (search.value.trim()) next.set('search', search.value.trim());
+        const query = next.toString();
+        const nextUrl = query
+          ? `${window.location.pathname}?${query}`
+          : window.location.pathname;
+        window.history.replaceState(null, '', nextUrl);
+      }
+
+      function applySearch(updateAddress = true) {
         const query = search.value.trim().toLowerCase();
         let visible = 0;
         cards.forEach((card) => {
@@ -613,7 +643,50 @@ def render_html(talks: list[dict[str, Any]]) -> str:
           if (match) visible += 1;
         });
         visibleCount.textContent = visible;
-      });
+        if (updateAddress) updateUrl();
+      }
+
+      async function writeClipboard(text) {
+        if (navigator.clipboard?.writeText) {
+          try {
+            await navigator.clipboard.writeText(text);
+            return;
+          } catch (_error) {
+            // Fall back to document selection below.
+          }
+        }
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-999px';
+        document.body.append(textarea);
+        textarea.select();
+        try {
+          if (!document.execCommand('copy')) throw new Error('Copy rejected');
+        } finally {
+          textarea.remove();
+        }
+      }
+
+      async function copyCatalogLink() {
+        updateUrl();
+        try {
+          await writeClipboard(window.location.href);
+          copyStatus.textContent = 'Catalog link copied.';
+          window.setTimeout(() => {
+            copyStatus.textContent = '';
+          }, 1600);
+        } catch (error) {
+          console.error(error);
+          copyStatus.textContent = 'Copy is unavailable in this browser.';
+        }
+      }
+
+      search.value = params.get('search') || '';
+      applySearch(false);
+      search.addEventListener('input', () => applySearch(true));
+      copyButton.addEventListener('click', copyCatalogLink);
     </script>
   </body>
 </html>

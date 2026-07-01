@@ -37,4 +37,12 @@ jobs:
       - name: Verify generated talk catalog
         run: |
           python3 scripts/generate_talk_catalog.py
+          python3 - <<'PY'
+          from pathlib import Path
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          for expected in ("copy-catalog-link", "URLSearchParams", "history.replaceState"):
+              if expected not in html:
+                  raise SystemExit(f"index.html is missing {expected}")
+          PY
           git diff --exit-code -- TALK_CATALOG.md TALK_CATALOG.json index.html

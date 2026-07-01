@@ -10,7 +10,8 @@ outputs are useful for sharing or archiving.
   rendered outputs, assets, and known publication links.
 - `TALK_CATALOG.json` and `index.html` are generated from the same source so
   agents, scripts, and browsers can inspect the catalog without parsing
-  Markdown.
+  Markdown. The browser catalog keeps search state in the URL so filtered views
+  can be copied and shared.
 - `20250925 Volz HAWAII Vibe Coding/` contains the R Markdown source, image
   assets, CSS, and rendered PDF/HTML outputs for the HAWAII 2025 talk on vibe
   coding and programming education. Published copy:
