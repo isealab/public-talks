@@ -1,2 +1,18 @@
-20250925 Volz HAWAII Vibe Coding/rsconnect/documents/20250925 HAWAII VOLZ Vibe Coding.rmd/rpubs.com/rpubs/Document.dcf
-20250925 Volz HAWAII Vibe Coding/.Rhistory
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# R session and IDE state
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+
+# knitr/rmarkdown intermediates
+*_cache/
+*_files/
+*.knit.md
+*.utf8.md
+
+# Local publishing metadata
+rsconnect/
